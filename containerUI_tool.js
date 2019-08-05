@@ -10,6 +10,7 @@ function buildAnchor(x, y) {
     draggable: true
   });
   anchorLayer.add(anchor);
+  anchorLayer.draw();
   return anchor;
 }
 
@@ -32,4 +33,26 @@ function drawCurves() {
   control2Y = endY;
   curveLine.points([startX, startY, control1X, control1Y, control2X, control2Y, endX, endY]);
   curveLayer.draw();
+}
+
+
+function changeScale(flag) {
+  var scaleBy = 1.1;
+  var oldScale = stage.scaleX();
+
+  var pointTo = {
+    x: (stage.x() - (width / 2)) / oldScale,
+    y: (stage.y() - (height / 2)) / oldScale
+  };
+
+  var newScale = flag === true ? oldScale * scaleBy : oldScale / scaleBy;
+  stage.scale({ x: newScale, y: newScale });
+
+  var newPos = {
+    x: pointTo.x * newScale + (width / 2),
+    y: pointTo.y * newScale + (height / 2)
+  };
+
+  stage.position(newPos);
+  stage.batchDraw();
 }
