@@ -60,6 +60,7 @@ function changeScale(flag) {
 
 
 // Boxの作成
+//opasityは一旦グループにあてる
 function buildNode(title, argWidth, argHeight) {
 
   var boxGroup = new Konva.Group({
