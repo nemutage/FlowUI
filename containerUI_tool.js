@@ -36,6 +36,7 @@ function drawCurves() {
 }
 
 
+// ズームアウト
 function changeScale(flag) {
   var scaleBy = 1.1;
   var oldScale = stage.scaleX();
@@ -55,4 +56,67 @@ function changeScale(flag) {
 
   stage.position(newPos);
   stage.batchDraw();
+}
+
+
+// Boxの作成
+function buildNode(title, argWidth, argHeight) {
+
+  var boxGroup = new Konva.Group({
+    x: 10,
+    y: 10,
+    draggable: true,
+    opacity: 0.9
+  });
+
+
+  var box1 = new Konva.Rect({
+    x: 0,
+    y: 0,
+    width: argWidth,
+    height: argHeight,
+    fill: 'rgb(30, 30, 30)',
+    stroke: 'rgb(10, 10, 10)',
+    strokeWidth: 1,
+    shadowBlur: 10,
+    shadowColor: 'black',
+    shadowOffset: { x: 5, y: 5 },
+    shadowOpacity: 0.5,
+    cornerRadius: 10
+  });
+  boxGroup.add(box1);
+
+
+  var box2 = new Konva.Rect({
+    x: 0,
+    y: 0,
+    width: argWidth,
+    height: 35,
+    stroke: 'rgb(10, 10, 10)',
+    strokeWidth: 1,
+    cornerRadius: [10, 10, 0, 0],
+    fillLinearGradientStartPoint: { x: 0, y: 0 },
+    fillLinearGradientEndPoint: { x: 200, y: 180 },
+    fillLinearGradientColorStops: [0, 'rgb(132, 169, 191)', 1, 'black']
+  });
+  boxGroup.add(box2);
+
+
+  var text = new Konva.Text({
+    x: 10,
+    y: 10,
+    text: title,
+    fontSize: 20,
+    fontFamily: 'Calibri',
+    fill: 'white'
+  });
+  boxGroup.add(text);
+
+
+  boxGroup.cache();
+  boxLayer.add(boxGroup);
+  boxLayer.draw();
+
+  nodeArray.push(boxGroup);
+  return boxGroup;
 }
