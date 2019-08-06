@@ -113,7 +113,7 @@ function buildNode(title, argWidth, argHeight) {
   boxGroup.add(text);
 
 
-  boxGroup.cache();
+  boxGroup.cache(); //パフォーマンス
   boxLayer.add(boxGroup);
   boxLayer.draw();
 

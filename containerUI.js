@@ -48,7 +48,6 @@ drawCurves();
 
 
 
-
 //////////////box//////////////////////
 buildNode('Tomcat', 200, 150);//200 150
 
@@ -58,9 +57,9 @@ buildNode('Tomcat', 200, 150);//200 150
 
 
 //////////event////////////////////////
-// ---- box ---- //
 $(function () {
 
+// ---- box ---- //
   $('#rename').on('click', function () {
     text.text('changed');
     boxLayer.draw();
