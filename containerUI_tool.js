@@ -9,21 +9,35 @@ function buildAnchor(x, y) {
     strokeWidth: 2,
     draggable: true
   });
+  anchor.cache();
   anchorLayer.add(anchor);
   anchorLayer.draw();
   return anchor;
 }
 
 
-// ベジェ曲線の描画
-function drawCurves() {
+function buildAnchorSet(startX, startY, endX, endY) {
+  var startAnchor = buildAnchor(startX, startY);
+  var endAnchor = buildAnchor(endX, endY);
+
+  var anchorSet = {
+    start: startAnchor,
+    end: endAnchor
+  };
+
+  return anchorSet;
+}
+
+
+// ベジェ曲線のポイント設定
+function setCurvePoint(curveLine, anchorSet) {
   var startX, startY, control1X, control1Y, control2X, control2Y, endX, endY;
 
   // 始点、終点の設定
-  startX = bezier.start.attrs.x;
-  startY = bezier.start.attrs.y;
-  endX = bezier.end.attrs.x;
-  endY = bezier.end.attrs.y;
+  startX = anchorSet.start.attrs.x;
+  startY = anchorSet.start.attrs.y;
+  endX = anchorSet.end.attrs.x;
+  endY = anchorSet.end.attrs.y;
 
   // 制御点の設定
   var len = Math.floor(Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)));
@@ -31,9 +45,48 @@ function drawCurves() {
   control1Y = startY;
   control2X = endX - Math.floor(len / 2);
   control2Y = endY;
+
   curveLine.points([startX, startY, control1X, control1Y, control2X, control2Y, endX, endY]);
-  curveLayer.draw();
 }
+
+
+function buildCurveLine(anchorSet) {
+  var curveLine = new Konva.Line({
+    stroke: '#ccc',
+    strokeWidth: 2,
+    bezier: true,
+  });
+
+  setCurvePoint(curveLine, anchorSet);
+  curveLayer.add(curveLine);
+  curveLayer.draw();
+
+  anchorSet.start.on('dragmove', function () {
+    setCurvePoint(curveLine, anchorSet);
+    curveLayer.draw();
+  });
+  anchorSet.end.on('dragmove', function () {
+    setCurvePoint(curveLine, anchorSet);
+    curveLayer.draw();
+  });
+
+  return curveLine;
+}
+
+
+function buildLink(startX, startY, endX, endY) {
+  var anchorSet = buildAnchorSet(startX, startY, endX, endY);
+  var curveLine = buildCurveLine(anchorSet);
+
+  var link = {
+    start: anchorSet.start,
+    end: anchorSet.end,
+    line: curveLine
+  }
+
+  linkArray.push(link);
+}
+
 
 
 // ズームアウト
@@ -60,7 +113,6 @@ function changeScale(flag) {
 
 
 // Boxの作成
-//opasityは一旦グループにあてる
 function buildNode(title, argWidth, argHeight) {
 
   var boxGroup = new Konva.Group({
@@ -114,7 +166,7 @@ function buildNode(title, argWidth, argHeight) {
   boxGroup.add(text);
 
 
-  boxGroup.cache(); //パフォーマンス
+  boxGroup.cache();
   boxLayer.add(boxGroup);
   boxLayer.draw();
 

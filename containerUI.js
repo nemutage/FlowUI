@@ -22,44 +22,36 @@ stage.add(anchorLayer);
 
 // その他グローバル変数
 var nodeArray = [];
+var linkArray = [];
 
 
-/////////////bezier///////////////////
-var bezier = {
-  start: buildAnchor(380, 250),
-  end: buildAnchor(400, 30)
-};
 
-var curveLine = new Konva.Line({
-  stroke: '#ccc',
-  strokeWidth: 2,
-  bezier: true,
+
+/////////////link///////////////////
+/*
+$('#add-anchor').on('click', function () {
+  buildLink(380, 250, 400, 30);
 });
-curveLayer.add(curveLine);
-
-anchorLayer.on('beforeDraw', function () {
-  drawCurves();
-});
-
-drawCurves();
-
+*/
 ///////////////////////////////////////
 
 
 
 
-//////////////box//////////////////////
-buildNode('Tomcat', 200, 150);//200 150
 
+//////////////box//////////////////////
+/*
+buildNode('Tomcat', 200, 150);//200 150
+*/
 //////////////////////////////////////
 
 
 
 
 //////////event////////////////////////
+// ---- box ---- //
 $(function () {
 
-// ---- box ---- //
   $('#rename').on('click', function () {
     text.text('changed');
     boxLayer.draw();
@@ -76,6 +68,18 @@ $(function () {
     width = Number($('#node-width').val());
     height = Number($('#node-height').val());
     buildNode(title, width, height);
+  });
+
+
+// ---- link ---- //
+//380, 250   400, 30
+  $('#add-anchor').on('click', function () {
+    var startX, startY, endX, endY;
+    startX = Number($('#start-x').val());
+    startY = Number($('#start-y').val());
+    endX = Number($('#end-x').val());
+    endY = Number($('#end-y').val());
+    buildLink(startX, startY, endX, endY);
   });
 
 
