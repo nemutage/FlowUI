@@ -11,13 +11,11 @@ var stage = new Konva.Stage({
 
 // Layerの準備
 var curveLayer = new Konva.Layer();
-var boxLayer = new Konva.Layer();
-var anchorLayer = new Konva.Layer();
+var nodeLayer = new Konva.Layer();
 
 // Layer重ね処理
 stage.add(curveLayer);
-stage.add(boxLayer);
-stage.add(anchorLayer);
+stage.add(nodeLayer);
 
 
 // その他グローバル変数
@@ -34,7 +32,6 @@ $('#add-anchor').on('click', function () {
 });
 */
 ///////////////////////////////////////
-
 
 
 
@@ -58,7 +55,7 @@ $(function () {
   });
 
   $('#delete-node').on('click', function () {
-    boxGroup.remove();
+    nodeGroup.remove();
     boxLayer.draw();
   });
 
@@ -67,7 +64,13 @@ $(function () {
     title = $('#node-name').val();
     width = Number($('#node-width').val());
     height = Number($('#node-height').val());
-    buildNode(title, width, height);
+
+    var node;
+    node = buildNode(title, width, height);
+
+    buildAnchor(node)
+
+    nodeLayer.draw();
   });
 
 

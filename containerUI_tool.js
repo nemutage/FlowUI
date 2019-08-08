@@ -1,21 +1,21 @@
 // リンク点の設定
-function buildAnchor(x, y) {
+function buildAnchor(node) {
   var anchor = new Konva.Circle({
-    x: x,
-    y: y,
+    x: 10,
+    y: 80,
     radius: 8,
     stroke: '#666',
     fill: '#eee',
     strokeWidth: 2,
     draggable: true
   });
-  anchor.cache();
-  anchorLayer.add(anchor);
-  anchorLayer.draw();
-  return anchor;
+  node.nodeGroup.add(anchor);
+  node.nodeGroup.cache();
+  node.anchor.push(anchor);
+  //return anchor;
 }
 
-
+/*
 function buildAnchorSet(startX, startY, endX, endY) {
   var startAnchor = buildAnchor(startX, startY);
   var endAnchor = buildAnchor(endX, endY);
@@ -27,8 +27,9 @@ function buildAnchorSet(startX, startY, endX, endY) {
 
   return anchorSet;
 }
+*/
 
-
+/*
 // ベジェ曲線のポイント設定
 function setCurvePoint(curveLine, anchorSet) {
   var startX, startY, control1X, control1Y, control2X, control2Y, endX, endY;
@@ -48,8 +49,9 @@ function setCurvePoint(curveLine, anchorSet) {
 
   curveLine.points([startX, startY, control1X, control1Y, control2X, control2Y, endX, endY]);
 }
+*/
 
-
+/*
 function buildCurveLine(anchorSet) {
   var curveLine = new Konva.Line({
     stroke: '#ccc',
@@ -72,8 +74,9 @@ function buildCurveLine(anchorSet) {
 
   return curveLine;
 }
+*/
 
-
+/*
 function buildLink(startX, startY, endX, endY) {
   var anchorSet = buildAnchorSet(startX, startY, endX, endY);
   var curveLine = buildCurveLine(anchorSet);
@@ -86,7 +89,7 @@ function buildLink(startX, startY, endX, endY) {
 
   linkArray.push(link);
 }
-
+*/
 
 
 // ズームアウト
@@ -115,9 +118,9 @@ function changeScale(flag) {
 // Boxの作成
 function buildNode(title, argWidth, argHeight) {
 
-  var boxGroup = new Konva.Group({
-    x: 10,
-    y: 10,
+  var nodeGroup = new Konva.Group({
+    x: 0,
+    y: 0,
     draggable: true,
     opacity: 0.9
   });
@@ -137,7 +140,7 @@ function buildNode(title, argWidth, argHeight) {
     shadowOpacity: 0.5,
     cornerRadius: 10
   });
-  boxGroup.add(box1);
+  nodeGroup.add(box1);
 
 
   var box2 = new Konva.Rect({
@@ -152,7 +155,7 @@ function buildNode(title, argWidth, argHeight) {
     fillLinearGradientEndPoint: { x: 200, y: 180 },
     fillLinearGradientColorStops: [0, 'rgb(132, 169, 191)', 1, 'black']
   });
-  boxGroup.add(box2);
+  nodeGroup.add(box2);
 
 
   var text = new Konva.Text({
@@ -163,13 +166,25 @@ function buildNode(title, argWidth, argHeight) {
     fontFamily: 'Calibri',
     fill: 'white'
   });
-  boxGroup.add(text);
+  nodeGroup.add(text);
 
 
-  boxGroup.cache();
-  boxLayer.add(boxGroup);
-  boxLayer.draw();
+  nodeGroup.cache();
+  nodeLayer.add(nodeGroup);
 
-  nodeArray.push(boxGroup);
-  return boxGroup;
+
+  var node = {
+    nodeGroup: nodeGroup,
+    box1: box1,
+    box2: box2,
+    text: text,
+    anchor: [],
+
+    //id:
+    //title:
+  }
+
+  nodeArray.push(node);
+
+  return node;
 }
