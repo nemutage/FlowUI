@@ -1,44 +1,20 @@
-// リンク点の設定
-function buildAnchor(node) {
-  var anchor = new Konva.Circle({
-    x: 10,
-    y: 80,
-    radius: 8,
-    stroke: '#666',
-    fill: '#eee',
-    strokeWidth: 2,
-    draggable: true
-  });
-  node.nodeGroup.add(anchor);
-  node.nodeGroup.cache();
-  node.anchor.push(anchor);
-  //return anchor;
+function findNodeByName(name) {
+  for(var i = 0; i < nodeArray.length; i++){
+    if(nodeArray[i].name == name)return nodeArray[i];
+  }
+  return null;
 }
 
-/*
-function buildAnchorSet(startX, startY, endX, endY) {
-  var startAnchor = buildAnchor(startX, startY);
-  var endAnchor = buildAnchor(endX, endY);
 
-  var anchorSet = {
-    start: startAnchor,
-    end: endAnchor
-  };
-
-  return anchorSet;
-}
-*/
-
-/*
 // ベジェ曲線のポイント設定
-function setCurvePoint(curveLine, anchorSet) {
+function setCurveLinePoint(curveLine, startAnchor, endAnchor) {
   var startX, startY, control1X, control1Y, control2X, control2Y, endX, endY;
 
   // 始点、終点の設定
-  startX = anchorSet.start.attrs.x;
-  startY = anchorSet.start.attrs.y;
-  endX = anchorSet.end.attrs.x;
-  endY = anchorSet.end.attrs.y;
+  startX = startAnchor.attrs.x + startAnchor.node.group.attrs.x;
+  startY = startAnchor.attrs.y + startAnchor.node.group.attrs.y;
+  endX = endAnchor.attrs.x + endAnchor.node.group.attrs.x;
+  endY = endAnchor.attrs.y + endAnchor.node.group.attrs.y;
 
   // 制御点の設定
   var len = Math.floor(Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)));
@@ -49,47 +25,57 @@ function setCurvePoint(curveLine, anchorSet) {
 
   curveLine.points([startX, startY, control1X, control1Y, control2X, control2Y, endX, endY]);
 }
-*/
 
-/*
-function buildCurveLine(anchorSet) {
+
+function buildLink(startAnchor, endAnchor) {
   var curveLine = new Konva.Line({
     stroke: '#ccc',
     strokeWidth: 2,
     bezier: true,
   });
 
-  setCurvePoint(curveLine, anchorSet);
+  setCurveLinePoint(curveLine, startAnchor, endAnchor);
   curveLayer.add(curveLine);
-  curveLayer.draw();
-
-  anchorSet.start.on('dragmove', function () {
-    setCurvePoint(curveLine, anchorSet);
-    curveLayer.draw();
-  });
-  anchorSet.end.on('dragmove', function () {
-    setCurvePoint(curveLine, anchorSet);
-    curveLayer.draw();
-  });
-
-  return curveLine;
-}
-*/
-
-/*
-function buildLink(startX, startY, endX, endY) {
-  var anchorSet = buildAnchorSet(startX, startY, endX, endY);
-  var curveLine = buildCurveLine(anchorSet);
 
   var link = {
-    start: anchorSet.start,
-    end: anchorSet.end,
-    line: curveLine
+    curveLine: curveLine,
+    start: startAnchor,
+    end: endAnchor
   }
-
   linkArray.push(link);
+
+  startAnchor.node.group.on('dragmove', function () {
+    setCurveLinePoint(curveLine, startAnchor, endAnchor);
+    curveLayer.draw();
+  });
+  endAnchor.node.group.on('dragmove', function () {
+    setCurveLinePoint(curveLine, startAnchor, endAnchor);
+    curveLayer.draw();
+  });
 }
-*/
+
+
+// リンク点の設定
+function buildAnchor(nodeName, anchorName, rlFlag) { //rlFlag right: true, left: false
+  var node = findNodeByName(nodeName);
+  if(node === null)return;
+
+  var anchor = new Konva.Circle({
+    x: rlFlag ? node.box1.width() - 10 : 10,
+    y: 80,
+    name: anchorName,
+    radius: 8,
+    stroke: '#666',
+    fill: '#eee',
+    strokeWidth: 2,
+  });
+  anchor.node = node;
+  anchor.type = 'anchor';
+
+  node.group.add(anchor);
+  node.group.cache();
+  node.anchorArray.push(anchor);
+}
 
 
 // ズームアウト
@@ -111,20 +97,17 @@ function changeScale(flag) {
   };
 
   stage.position(newPos);
-  stage.batchDraw();
 }
 
 
 // Boxの作成
-function buildNode(title, argWidth, argHeight) {
-
-  var nodeGroup = new Konva.Group({
+function buildNode(name, argWidth, argHeight) {
+  var group = new Konva.Group({
     x: 0,
     y: 0,
     draggable: true,
     opacity: 0.9
   });
-
 
   var box1 = new Konva.Rect({
     x: 0,
@@ -140,8 +123,7 @@ function buildNode(title, argWidth, argHeight) {
     shadowOpacity: 0.5,
     cornerRadius: 10
   });
-  nodeGroup.add(box1);
-
+  group.add(box1);
 
   var box2 = new Konva.Rect({
     x: 0,
@@ -155,36 +137,29 @@ function buildNode(title, argWidth, argHeight) {
     fillLinearGradientEndPoint: { x: 200, y: 180 },
     fillLinearGradientColorStops: [0, 'rgb(132, 169, 191)', 1, 'black']
   });
-  nodeGroup.add(box2);
-
+  group.add(box2);
 
   var text = new Konva.Text({
     x: 10,
     y: 10,
-    text: title,
+    text: name,
     fontSize: 20,
     fontFamily: 'Calibri',
     fill: 'white'
   });
-  nodeGroup.add(text);
+  group.add(text);
 
-
-  nodeGroup.cache();
-  nodeLayer.add(nodeGroup);
+  group.cache();
+  nodeLayer.add(group);
 
 
   var node = {
-    nodeGroup: nodeGroup,
+    group: group,
     box1: box1,
     box2: box2,
     text: text,
-    anchor: [],
-
-    //id:
-    //title:
+    anchorArray: [],
+    name: name,
   }
-
   nodeArray.push(node);
-
-  return node;
 }

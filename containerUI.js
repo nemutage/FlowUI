@@ -21,78 +21,65 @@ stage.add(nodeLayer);
 // その他グローバル変数
 var nodeArray = [];
 var linkArray = [];
-
-
-
-
-/////////////link///////////////////
-/*
-$('#add-anchor').on('click', function () {
-  buildLink(380, 250, 400, 30);
-});
-*/
-///////////////////////////////////////
-
-
-
-
-//////////////box//////////////////////
-/*
-buildNode('Tomcat', 200, 150);//200 150
-*/
-//////////////////////////////////////
+var tmp = null;
 
 
 
 
 //////////event////////////////////////
-// ---- box ---- //
 $(function () {
-
-  $('#rename').on('click', function () {
-    text.text('changed');
-    boxLayer.draw();
-  });
-
-  $('#delete-node').on('click', function () {
-    nodeGroup.remove();
-    boxLayer.draw();
-  });
-
+// ---- box ---- //
   $('#add-node').on('click', function () {
-    var title, width, height;
-    title = $('#node-name').val();
+    var name, width, height;
+    name = $('#node-name').val();
     width = Number($('#node-width').val());
     height = Number($('#node-height').val());
 
-    var node;
-    node = buildNode(title, width, height);
+    buildNode(name, width, height);
+    nodeLayer.draw();
+  });
 
-    buildAnchor(node)
+  $('#add-anchor').on('click', function () {
+    var nodeName, anchorName, rl;
+    nodeName = $('#node-name-for-anchor').val();
+    anchorName = $('#anchor-name').val();
+    rl = ($('#rl').val() == 'true') ? true : false;
 
+    buildAnchor(nodeName, anchorName, rl);
     nodeLayer.draw();
   });
 
 
 // ---- link ---- //
-//380, 250   400, 30
-  $('#add-anchor').on('click', function () {
-    var startX, startY, endX, endY;
-    startX = Number($('#start-x').val());
-    startY = Number($('#start-y').val());
-    endX = Number($('#end-x').val());
-    endY = Number($('#end-y').val());
-    buildLink(startX, startY, endX, endY);
+  stage.on('mousedown', function(e) {
+    tmp = e.target;
+    if(tmp.type == 'anchor'){
+      tmp.node.group.draggable(false);
+      stage.draggable(false);
+    }
+  });
+
+  stage.on('mouseup', function(e) {
+    if(tmp.type == 'anchor'){
+      tmp.node.group.draggable(true);
+      stage.draggable(true);
+      if(e.target.type == 'anchor'){
+        buildLink(tmp, e.target);
+        curveLayer.draw();
+      }
+    }
   });
 
 
   // ---- scale ---- //
   $('#zoom').on('click', function () {
     changeScale(true);
+    stage.batchDraw();
   });
 
   $('#out').on('click', function () {
     changeScale(false);
+    stage.batchDraw();
   });
 
 });
