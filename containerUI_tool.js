@@ -6,8 +6,15 @@ function findNodeByName(name) {
 }
 
 
+function getNextHeight(node) {
+  var height;
+  height = 60 + node.partsArray.length * 35;
+  return height;
+}
+
+
 // ベジェ曲線のポイント設定
-function setCurveLinePoint(curveLine, startAnchor, endAnchor) {
+function setLinkLinePoint(linkLine, startAnchor, endAnchor) {
   var startX, startY, control1X, control1Y, control2X, control2Y, endX, endY;
 
   // 始点、終点の設定
@@ -23,34 +30,34 @@ function setCurveLinePoint(curveLine, startAnchor, endAnchor) {
   control2X = endX - Math.floor(len / 2);
   control2Y = endY;
 
-  curveLine.points([startX, startY, control1X, control1Y, control2X, control2Y, endX, endY]);
+  linkLine.points([startX, startY, control1X, control1Y, control2X, control2Y, endX, endY]);
 }
 
 
 function buildLink(startAnchor, endAnchor) {
-  var curveLine = new Konva.Line({
+  var linkLine = new Konva.Line({
     stroke: '#ccc',
     strokeWidth: 2,
     bezier: true,
   });
 
-  setCurveLinePoint(curveLine, startAnchor, endAnchor);
-  curveLayer.add(curveLine);
+  setLinkLinePoint(linkLine, startAnchor, endAnchor);
+  linkLayer.add(linkLine);
 
   var link = {
-    curveLine: curveLine,
+    linkLine: linkLine,
     start: startAnchor,
     end: endAnchor
   }
   linkArray.push(link);
 
   startAnchor.node.group.on('dragmove', function () {
-    setCurveLinePoint(curveLine, startAnchor, endAnchor);
-    curveLayer.draw();
+    setLinkLinePoint(linkLine, startAnchor, endAnchor);
+    linkLayer.draw();
   });
   endAnchor.node.group.on('dragmove', function () {
-    setCurveLinePoint(curveLine, startAnchor, endAnchor);
-    curveLayer.draw();
+    setLinkLinePoint(linkLine, startAnchor, endAnchor);
+    linkLayer.draw();
   });
 }
 
@@ -62,7 +69,7 @@ function buildAnchor(nodeName, anchorName, rlFlag) { //rlFlag right: true, left:
 
   var anchor = new Konva.Circle({
     x: rlFlag ? node.box1.width() - 10 : 10,
-    y: 80,
+    y: getNextHeight(node),
     name: anchorName,
     radius: 8,
     stroke: '#666',
@@ -74,7 +81,7 @@ function buildAnchor(nodeName, anchorName, rlFlag) { //rlFlag right: true, left:
 
   node.group.add(anchor);
   node.group.cache();
-  node.anchorArray.push(anchor);
+  node.partsArray.push(anchor);
 }
 
 
@@ -158,8 +165,8 @@ function buildNode(name, argWidth, argHeight) {
     box1: box1,
     box2: box2,
     text: text,
-    anchorArray: [],
-    name: name,
+    partsArray: [],
+    name: name
   }
   nodeArray.push(node);
 }

@@ -10,11 +10,11 @@ var stage = new Konva.Stage({
 });
 
 // Layerの準備
-var curveLayer = new Konva.Layer();
+var linkLayer = new Konva.Layer();
 var nodeLayer = new Konva.Layer();
 
 // Layer重ね処理
-stage.add(curveLayer);
+stage.add(linkLayer);
 stage.add(nodeLayer);
 
 
@@ -65,7 +65,7 @@ $(function () {
       stage.draggable(true);
       if(e.target.type == 'anchor'){
         buildLink(tmp, e.target);
-        curveLayer.draw();
+        linkLayer.draw();
       }
     }
   });
