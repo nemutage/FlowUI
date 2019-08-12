@@ -1,22 +1,13 @@
+$.getScript("flowUI_tool.js");
+
+
 var width = window.innerWidth;
 var height = window.innerHeight;
 
-// stage作成
-var stage = new Konva.Stage({
-  container: 'container',
-  width: width,
-  height: height,
-  draggable: true
-});
-
-// Layerの準備
-var linkLayer = new Konva.Layer();
-var nodeLayer = new Konva.Layer();
-
-// Layer重ね処理
-stage.add(linkLayer);
-stage.add(nodeLayer);
-
+// 描画用変数
+var stage;
+var linkLayer
+var nodeLayer
 
 // その他グローバル変数
 var nodeArray = [];
@@ -24,18 +15,29 @@ var linkArray = [];
 var tmp = null;
 
 
-
-
-//////////event////////////////////////
 $(function () {
+// stage作成
+stage = new Konva.Stage({
+  container: 'container',
+  width: width,
+  height: height,
+  draggable: true
+});
+
+// Layerの準備
+linkLayer = new Konva.Layer();
+nodeLayer = new Konva.Layer();
+stage.add(linkLayer);
+stage.add(nodeLayer);
+
+
+//////////event///////////////
 // ---- box ---- //
   $('#add-node').on('click', function () {
-    var name, width, height;
+    var name;
     name = $('#node-name').val();
-    width = Number($('#node-width').val());
-    height = Number($('#node-height').val());
 
-    buildNode(name, width, height);
+    buildNode(name);
     nodeLayer.draw();
   });
 
@@ -48,7 +50,6 @@ $(function () {
     buildAnchor(nodeName, anchorName, rl);
     nodeLayer.draw();
   });
-
 
 // ---- link ---- //
   stage.on('mousedown', function(e) {
@@ -70,7 +71,6 @@ $(function () {
     }
   });
 
-
   // ---- scale ---- //
   $('#zoom').on('click', function () {
     changeScale(true);
@@ -83,7 +83,7 @@ $(function () {
   });
 
 });
-///////////////////////////////////
+///////////////////////////////
 
 
 

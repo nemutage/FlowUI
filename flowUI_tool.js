@@ -6,13 +6,6 @@ function findNodeByName(name) {
 }
 
 
-function getNextHeight(node) {
-  var height;
-  height = 60 + node.partsArray.length * 35;
-  return height;
-}
-
-
 // ベジェ曲線のポイント設定
 function setLinkLinePoint(linkLine, startAnchor, endAnchor) {
   var startX, startY, control1X, control1Y, control2X, control2Y, endX, endY;
@@ -69,7 +62,7 @@ function buildAnchor(nodeName, anchorName, rlFlag) { //rlFlag right: true, left:
 
   var anchor = new Konva.Circle({
     x: rlFlag ? node.box1.width() - 10 : 10,
-    y: getNextHeight(node),
+    y: node.getNextHeight(),
     name: anchorName,
     radius: 8,
     stroke: '#666',
@@ -108,7 +101,7 @@ function changeScale(flag) {
 
 
 // Boxの作成
-function buildNode(name, argWidth, argHeight) {
+function buildNode(name) {
   var group = new Konva.Group({
     x: 0,
     y: 0,
@@ -119,8 +112,8 @@ function buildNode(name, argWidth, argHeight) {
   var box1 = new Konva.Rect({
     x: 0,
     y: 0,
-    width: argWidth,
-    height: argHeight,
+    width: 200,
+    height: 130,
     fill: 'rgb(30, 30, 30)',
     stroke: 'rgb(10, 10, 10)',
     strokeWidth: 1,
@@ -135,7 +128,7 @@ function buildNode(name, argWidth, argHeight) {
   var box2 = new Konva.Rect({
     x: 0,
     y: 0,
-    width: argWidth,
+    width: 200,
     height: 35,
     stroke: 'rgb(10, 10, 10)',
     strokeWidth: 1,
@@ -161,12 +154,17 @@ function buildNode(name, argWidth, argHeight) {
 
 
   var node = {
+    //field
     group: group,
     box1: box1,
     box2: box2,
     text: text,
     partsArray: [],
-    name: name
+    name: name,
+    //method
+    getNextHeight: function() {
+      return 60 + this.partsArray.length * 35;
+    }
   }
   nodeArray.push(node);
 }
