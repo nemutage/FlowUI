@@ -1,6 +1,5 @@
 $.getScript("flowUI_tool.js");
 
-
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -16,23 +15,23 @@ var tmp = null;
 
 
 $(function () {
-// stage作成
-stage = new Konva.Stage({
-  container: 'container',
-  width: width,
-  height: height,
-  draggable: true
-});
+  // stage作成
+  stage = new Konva.Stage({
+    container: 'container',
+    width: width,
+    height: height,
+    draggable: true
+  });
 
-// Layerの準備
-linkLayer = new Konva.Layer();
-nodeLayer = new Konva.Layer();
-stage.add(linkLayer);
-stage.add(nodeLayer);
+  // Layerの準備
+  linkLayer = new Konva.Layer();
+  nodeLayer = new Konva.Layer();
+  stage.add(linkLayer);
+  stage.add(nodeLayer);
 
 
-//////////event///////////////
-// ---- box ---- //
+  // event
+  // ---- box ---- //
   $('#add-node').on('click', function () {
     var name;
     name = $('#node-name').val();
@@ -51,20 +50,20 @@ stage.add(nodeLayer);
     nodeLayer.draw();
   });
 
-// ---- link ---- //
-  stage.on('mousedown', function(e) {
+  // ---- link ---- //
+  stage.on('mousedown', function (e) {
     tmp = e.target;
-    if(tmp.type == 'anchor'){
+    if (tmp.type == 'anchor') {
       tmp.node.group.draggable(false);
       stage.draggable(false);
     }
   });
 
-  stage.on('mouseup', function(e) {
-    if(tmp.type == 'anchor'){
+  stage.on('mouseup', function (e) {
+    if (tmp.type == 'anchor') {
       tmp.node.group.draggable(true);
       stage.draggable(true);
-      if(e.target.type == 'anchor'){
+      if (e.target.type == 'anchor') {
         buildLink(tmp, e.target);
         linkLayer.draw();
       }
@@ -83,7 +82,7 @@ stage.add(nodeLayer);
   });
 
 });
-///////////////////////////////
+
 
 
 

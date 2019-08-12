@@ -61,7 +61,7 @@ function buildAnchor(nodeName, anchorName, rlFlag) { //rlFlag right: true, left:
   if(node === null)return;
 
   var anchor = new Konva.Circle({
-    x: rlFlag ? node.box1.width() - 10 : 10,
+    x: rlFlag ? node.getWidth() - 10 : 10,
     y: node.getNextHeight(),
     name: anchorName,
     radius: 8,
@@ -72,9 +72,7 @@ function buildAnchor(nodeName, anchorName, rlFlag) { //rlFlag right: true, left:
   anchor.node = node;
   anchor.type = 'anchor';
 
-  node.group.add(anchor);
-  node.group.cache();
-  node.partsArray.push(anchor);
+  node.addParts(anchor);
 }
 
 
@@ -162,8 +160,20 @@ function buildNode(name) {
     partsArray: [],
     name: name,
     //method
+    getWidth: function() {
+      return this.box1.width();
+    },
     getNextHeight: function() {
       return 60 + this.partsArray.length * 35;
+    },
+    addParts: function(parts) {
+      this.group.add(parts);
+      this.partsArray.push(parts);
+      if(this.partsArray.length >= 3){
+        var height = this.box1.height();
+        this.box1.height(height + 35);
+      }
+      this.group.cache();
     }
   }
   nodeArray.push(node);
