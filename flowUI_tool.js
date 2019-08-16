@@ -71,7 +71,6 @@ function buildAnchor(nodeName, anchorName, rlFlag) { //rlFlag right: true, left:
   });
   anchor.node = node;
   anchor.type = 'anchor';
-
   node.addParts(anchor);
 }
 
@@ -110,8 +109,8 @@ function buildNode(name) {
   var box1 = new Konva.Rect({
     x: 0,
     y: 0,
-    width: 200,
-    height: 130,
+    width: 250,
+    height: 35,
     fill: 'rgb(30, 30, 30)',
     stroke: 'rgb(10, 10, 10)',
     strokeWidth: 1,
@@ -126,11 +125,11 @@ function buildNode(name) {
   var box2 = new Konva.Rect({
     x: 0,
     y: 0,
-    width: 200,
+    width: 250,
     height: 35,
     stroke: 'rgb(10, 10, 10)',
     strokeWidth: 1,
-    cornerRadius: [10, 10, 0, 0],
+    cornerRadius: 10,
     fillLinearGradientStartPoint: { x: 0, y: 0 },
     fillLinearGradientEndPoint: { x: 200, y: 180 },
     fillLinearGradientColorStops: [0, 'rgb(132, 169, 191)', 1, 'black']
@@ -167,12 +166,12 @@ function buildNode(name) {
       return 60 + this.partsArray.length * 35;
     },
     addParts: function(parts) {
+      if(this.partsArray.length == 0){
+        this.box2.cornerRadius([10, 10, 0, 0]);
+      }
       this.group.add(parts);
       this.partsArray.push(parts);
-      if(this.partsArray.length >= 3){
-        var height = this.box1.height();
-        this.box1.height(height + 35);
-      }
+      this.box1.height(85 + (this.partsArray.length - 1) * 35);
       this.group.cache();
     }
   }
