@@ -41,13 +41,15 @@ $(function () {
   });
 
   $('#add-anchor').on('click', function () {
-    var nodeName, anchorName, rl;
+    var nodeName, anchorName, rl, index;
     nodeName = $('#node-name-for-anchor').val();
     anchorName = $('#anchor-name').val();
-    rl = ($('#rl').val() == 'true') ? true : false;
+    rl = $('#rl').val();
+    index = Number($('#index').val());
 
-    buildAnchor(nodeName, anchorName, rl);
+    buildAnchor(nodeName, anchorName, rl, index);
     nodeLayer.draw();
+    linkLayer.draw();
   });
 
   // ---- link ---- //
