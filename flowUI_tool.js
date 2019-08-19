@@ -1,6 +1,6 @@
 function findNodeByName(name) {
-  for(var i = 0; i < nodeArray.length; i++){
-    if(nodeArray[i].name == name)return nodeArray[i];
+  for (var i = 0; i < nodeArray.length; i++) {
+    if (nodeArray[i].name == name) return nodeArray[i];
   }
   return null;
 }
@@ -56,20 +56,10 @@ function buildLink(startAnchor, endAnchor) {
 
 
 // リンク点の設定
-function buildAnchor(nodeName, anchorName, rl, index) { //rl right: true, left: false
+function buildParts(nodeName, rl, index, partsName) { //rl right: true, left: false
   var node = findNodeByName(nodeName);
-  if(node === null)return;
-
-  var anchor = new Konva.Circle({
-    name: anchorName,
-    radius: 8,
-    stroke: '#666',
-    fill: '#eee',
-    strokeWidth: 2,
-  });
-  anchor.node = node;
-  anchor.type = 'anchor';
-  node.addParts(rl, index, anchor);
+  if (node === null) return;
+  node.addParts(rl, index, partsName);
 }
 
 
@@ -107,7 +97,7 @@ function buildNode(name) {
   var box1 = new Konva.Rect({
     x: 0,
     y: 0,
-    width: 250,
+    width: 260,
     height: 35,
     fill: 'rgb(30, 30, 30)',
     stroke: 'rgb(10, 10, 10)',
@@ -123,7 +113,7 @@ function buildNode(name) {
   var box2 = new Konva.Rect({
     x: 0,
     y: 0,
-    width: 250,
+    width: 260,
     height: 35,
     stroke: 'rgb(10, 10, 10)',
     strokeWidth: 1,
@@ -155,43 +145,79 @@ function buildNode(name) {
     box1: box1,
     box2: box2,
     text: text,
+
+    baseAnchorHeight: 60,
+    baseBox1Height: 85,
+    interval: 35,
+    anchorRadius: 8,
+    partsTextSize: 18,
+    anchorGap: 15,
+
     partsArray: {
       right: [],
       left: []
     },
     //method
-    addParts: function(rl, index, parts) {
+    addParts: function (rl, index, partsName) {
       //rl値のチェック(right or left)
-      if(rl != 'right' && rl != 'left')return false;
-
+      if (rl != 'right' && rl != 'left') return false;
       //index値のチェック(0-length)
-      if(index < 0 || this.partsArray[rl].length < index)return false;
+      if (index < 0 || this.partsArray[rl].length < index) return false;
+
 
       //box2の下コーナーの変更
-      if(this.partsArray.right.length == 0 && this.partsArray.left.length == 0){
+      if (this.partsArray.right.length == 0 && this.partsArray.left.length == 0) {
         this.box2.cornerRadius([10, 10, 0, 0]);
       }
 
-      //partsArrayの並べ替えとpartsの挿入
-      for(var i = index; i < this.partsArray[rl].length; i++){
-        var newY = this.partsArray[rl][i].y() + 35;
+
+      //partsArrayの並べ替えとpartsの設定,挿入 
+      for (var i = index; i < this.partsArray[rl].length; i++) {
+        //partsの並べ替え
+        var newY = this.partsArray[rl][i].y() + this.interval;
         this.partsArray[rl][i].y(newY);
+        //parts.textの並べ替え
+        newY = this.partsArray[rl][i].text.y() + this.interval;
+        this.partsArray[rl][i].text.y(newY);
       }
-      parts.x(rl == 'right' ? this.box1.width() - 10 : 10);
-      parts.y(60 + index * 35);
+      //partsの設定
+      var parts = new Konva.Circle({
+        radius: this.anchorRadius,
+        stroke: '#666',
+        fill: '#eee',
+        strokeWidth: 2,
+      });
+      parts.node = node;
+      parts.type = 'anchor';
+      parts.x(rl == 'right' ? this.box1.width() - this.anchorGap : this.anchorGap);
+      parts.y(this.baseAnchorHeight + index * this.interval);
+      //parts.testの設定
+      parts.text = new Konva.Text({
+        text: partsName,
+        fontSize: this.partsTextSize,
+        fontFamily: 'Calibri',
+        fill: 'white'
+      });
+      parts.text.x(rl == 'right' ? parts.x() - (this.anchorGap + parts.text.getTextWidth()) : parts.x() + this.anchorGap);
+      parts.text.y((this.baseAnchorHeight - this.partsTextSize / 2) + index * this.interval);
+      //parts,parts.textの挿入
       this.partsArray[rl].splice(index, 0, parts);
+
 
       //partsArray(.right or .left)の要素数によるbox1の高さの変更
       var maxLength = this.partsArray.right.length >= this.partsArray.left.length
-                      ? this.partsArray.right.length : this.partsArray.left.length;
-      this.box1.height(85 + (maxLength - 1) * 35);
+        ? this.partsArray.right.length : this.partsArray.left.length;
+      this.box1.height(this.baseBox1Height + (maxLength - 1) * this.interval);
+
 
       //layerの更新
       this.group.add(parts);
+      this.group.add(parts.text);
       this.group.cache();
 
+
       //全linkの更新
-      for(var i = 0; i < linkArray.length; i++){
+      for (var i = 0; i < linkArray.length; i++) {
         var linkLine = linkArray[i].linkLine;
         var start = linkArray[i].start;
         var end = linkArray[i].end;

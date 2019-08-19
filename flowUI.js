@@ -40,14 +40,14 @@ $(function () {
     nodeLayer.draw();
   });
 
-  $('#add-anchor').on('click', function () {
-    var nodeName, anchorName, rl, index;
-    nodeName = $('#node-name-for-anchor').val();
-    anchorName = $('#anchor-name').val();
+  $('#add-parts').on('click', function () {
+    var nodeName, partsName, rl, index;
+    nodeName = $('#node-name-for-parts').val();
+    partsName = $('#parts-name').val();
     rl = $('#rl').val();
     index = Number($('#index').val());
 
-    buildAnchor(nodeName, anchorName, rl, index);
+    buildParts(nodeName, rl, index, partsName);
     nodeLayer.draw();
     linkLayer.draw();
   });
