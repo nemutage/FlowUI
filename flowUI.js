@@ -36,21 +36,30 @@ $(function () {
     var name;
     name = $('#node-name').val();
 
-    buildNode(name);
+    makeNode(name);
     nodeLayer.draw();
   });
 
   $('#add-parts').on('click', function () {
     var nodeName, partsName, rl, index;
-    nodeName = $('#node-name-for-parts').val();
+    nodeName = $('#node-name2').val();
     partsName = $('#parts-name').val();
     rl = $('#rl').val();
     index = Number($('#index').val());
 
-    buildParts(nodeName, rl, index, partsName);
+    makeParts(nodeName, rl, index, partsName);
     nodeLayer.draw();
     linkLayer.draw();
   });
+
+  $('#delete-parts').on('click', function () {
+    var nodeName, rl, index;
+    nodeName = $('#node-name3').val();
+    rl = $('#rl2').val();
+    index = Number($('#index2').val());
+    
+  });
+
 
   // ---- link ---- //
   stage.on('mousedown', function (e) {
@@ -66,7 +75,7 @@ $(function () {
       tmp.node.group.draggable(true);
       stage.draggable(true);
       if (e.target.type == 'anchor') {
-        buildLink(tmp, e.target);
+        makeLink(tmp, e.target);
         linkLayer.draw();
       }
     }

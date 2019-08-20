@@ -27,7 +27,7 @@ function setLinkLinePoint(linkLine, startAnchor, endAnchor) {
 }
 
 
-function buildLink(startAnchor, endAnchor) {
+function makeLink(startAnchor, endAnchor) {
   var linkLine = new Konva.Line({
     stroke: '#ccc',
     strokeWidth: 2,
@@ -56,7 +56,7 @@ function buildLink(startAnchor, endAnchor) {
 
 
 // リンク点の設定
-function buildParts(nodeName, rl, index, partsName) { //rl right: true, left: false
+function makeParts(nodeName, rl, index, partsName) { //rl right: true, left: false
   var node = findNodeByName(nodeName);
   if (node === null) return;
   node.addParts(rl, index, partsName);
@@ -86,7 +86,7 @@ function changeScale(flag) {
 
 
 // Boxの作成
-function buildNode(name) {
+function makeNode(name) {
   var group = new Konva.Group({
     x: 0,
     y: 0,
